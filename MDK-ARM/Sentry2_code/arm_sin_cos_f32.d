@@ -1,0 +1,16 @@
+sentry2_code\arm_sin_cos_f32.o: ..\DSP\Source\ControllerFunctions\arm_sin_cos_f32.c
+sentry2_code\arm_sin_cos_f32.o: ../DSP/Include/dsp/controller_functions.h
+sentry2_code\arm_sin_cos_f32.o: ../DSP/Include/arm_math_types.h
+sentry2_code\arm_sin_cos_f32.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+sentry2_code\arm_sin_cos_f32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+sentry2_code\arm_sin_cos_f32.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+sentry2_code\arm_sin_cos_f32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+sentry2_code\arm_sin_cos_f32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+sentry2_code\arm_sin_cos_f32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\float.h
+sentry2_code\arm_sin_cos_f32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+sentry2_code\arm_sin_cos_f32.o: ../DSP/Include/arm_math_memory.h
+sentry2_code\arm_sin_cos_f32.o: ../DSP/Include/dsp/none.h
+sentry2_code\arm_sin_cos_f32.o: ../DSP/Include/dsp/utils.h
+sentry2_code\arm_sin_cos_f32.o: ../DSP/Include/arm_common_tables.h
+sentry2_code\arm_sin_cos_f32.o: ../DSP/Include/dsp/fast_math_functions.h
+sentry2_code\arm_sin_cos_f32.o: ../DSP/Include/dsp/basic_math_functions.h

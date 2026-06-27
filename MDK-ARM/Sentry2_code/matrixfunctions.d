@@ -1,0 +1,17 @@
+sentry2_code\matrixfunctions.o: D:/keilil/pack/ARM/CMSIS-DSP/1.16.2/Source/MatrixFunctions/MatrixFunctions.c
+sentry2_code\matrixfunctions.o: D:/keilil/pack/ARM/CMSIS-DSP/1.16.2/Source/MatrixFunctions/arm_mat_add_f32.c
+sentry2_code\matrixfunctions.o: ..\Drivers\CMSIS\DSP\Include\dsp/matrix_functions.h
+sentry2_code\matrixfunctions.o: ..\Drivers\CMSIS\DSP\Include\arm_math_types.h
+sentry2_code\matrixfunctions.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+sentry2_code\matrixfunctions.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+sentry2_code\matrixfunctions.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+sentry2_code\matrixfunctions.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+sentry2_code\matrixfunctions.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+sentry2_code\matrixfunctions.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\float.h
+sentry2_code\matrixfunctions.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+sentry2_code\matrixfunctions.o: ..\Drivers\CMSIS\DSP\Include\arm_math_memory.h
+sentry2_code\matrixfunctions.o: ..\Drivers\CMSIS\DSP\Include\dsp/none.h
+sentry2_code\matrixfunctions.o: ..\Drivers\CMSIS\DSP\Include\dsp/utils.h
+sentry2_code\matrixfunctions.o: D:/keilil/pack/ARM/CMSIS-DSP/1.16.2/Source/MatrixFunctions/arm_mat_add_q15.c
+sentry2_code\matrixfunctions.o: D:/keilil/pack/ARM/CMSIS-DSP/1.16.2/Source/MatrixFunctions/arm_mat_add_q31.c
+sentry2_code\matrixfunctions.o: D:/keilil/pack/ARM/CMSIS-DSP/1.16.2/Source/MatrixFunctions/arm_mat_cmplx_mult_f32.c
