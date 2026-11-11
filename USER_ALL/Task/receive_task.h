@@ -65,6 +65,30 @@ extern YAWImuReceiveData_t YAWImuReceiveData;
 #define YAWIMU_TIMEOUT_MS   50
 extern volatile uint32_t g_yawimu_rx_tick;
 extern uint8_t YAWImu_IsValid(void);
+#define YAW_R 180.0f
+extern float yaw_angle;
+
+/* ===== 上板自瞄信号 (CAN2 0x230) =====
+ * 上板每 5ms 发一帧, 8 字节:
+ *   [0][1] aim  int16 大端(高字节在前)
+ *   [2]~[7] 保留 0
+ * 与 0x200(IMU)/0x300(遥控)/0x110(导航) 靠 StdId 区分, 互不干扰。 */
+#define AIM_SIGNAL_CAN_ID          0x230
+
+//上板自瞄信号(队列传输用的数据包格式)
+typedef struct{
+    uint16_t id;
+    uint8_t  rx_data[8];
+}AimSignalReceiveQueueData_t;
+extern QueueHandle_t AimSignalReceive_queueHandle;
+
+typedef struct{
+	 int16_t get;
+}BaseBoard_Con;
+extern BaseBoard_Con base_con;
+
+//自瞄信号解析结果
+extern int16_t aim_signal_from_adv;
 
 /* 电机调试数据快照 - 接收任务写入，调试任务读取 */
 #define MOTOR_DEBUG_NUM 4
@@ -97,6 +121,7 @@ extern MotorSnapshot_t g_motor_snap;
 extern volatile uint32_t g_act_power_rx_tick;
 
 extern void Chassis_Receive_TaskInit(void);
+extern void JudgSys_TaskInit(void);
 extern void ChassisMotorReceive_Task(void *argumemt);
 extern void Chassis_Yaw_Task(void *argumemt)  ;
 extern void ChassisMotorReceiveAdv_Task(void *argumemt) ;
@@ -104,6 +129,7 @@ extern void YAWImuReceive_Task(void *argument);
 extern void CBorad_IMURead(void *argument);
 extern void MotorDebug_Init(void);
 extern void Chassis_POWER_Task(void *argument);
+extern void AimSignalReceive_Task(void *argument);
 /* 底盘本地BMI088 Yaw轴角速度 (rad/s) */
 extern float CBorad_YawRate;
 

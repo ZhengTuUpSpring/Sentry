@@ -1,21 +1,4 @@
-/**
-  ****************************(C) COPYRIGHT 2024 征途****************************
-  * @file       3508_driver.c/h
-  * @brief      
-  *             这里是3508的驱动函数，通过pid控制控制电机.
-  * @note       
-  * @history
-  *  Version    Date            Author          Modification
-  *  V1.0.0     Jan-29-2024    chenjiangnan    
-  *                                             1.添加增量式PID函数API
-  @verbatim
-  ==============================================================================
-
-  ==============================================================================
-  @endverbatim
-  ****************************(C) COPYRIGHT 2024 征途****************************
-  */
-#include "3508_caontrol.h"
+#include "control_3508.h"
 
 /**
   * @func			void M3508_Init(uint8_t motorid,M3508_HandleTypeDef* device,enum PID_MODE mode)

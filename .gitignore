@@ -19,6 +19,7 @@
 *.build_log.htm
 *.__i
 *.bak
+*.bak_*
 *_i.c
 *_i.h
 

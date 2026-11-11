@@ -99,11 +99,12 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  JudgSys_TaskInit();
+	Chassis_Receive_TaskInit();
+	Chassis_TaskInit();
+	Navigation_TaskInit();
   /* USER CODE END RTOS_THREADS */
-	 Chassis_TaskInit();
-	 Chassis_Receive_TaskInit();
-	 MotorDebug_Init();
-	 Navigation_TaskInit();
+
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */

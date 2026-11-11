@@ -14,6 +14,7 @@
 #include "math.h"
 #include "limit_power_control.h"
 #include "nav_task.h"
+#include "chassis_angle_calculation.h"
 /* define thread handle */
 TaskHandle_t chassis_taskHandle;				// main thread
 
@@ -51,8 +52,9 @@ void Chassis_Task(void *argument)
     uint16_t motor_init_tick = 0;
 
 		uint8_t tx_data =0x01;
+		float x_nav_speed;
+	  float y_nav_speed;
 		
-
     for(;;)
     {
 			motor1_init(&DM_4310);
@@ -73,7 +75,7 @@ void Chassis_Task(void *argument)
         y_speed_ref = -apply_deadzone(rc.ch0);
 
         chassis_Yaw = apply_deadzone(rc.ch2) * 0.01f;
-        z_speed_ref = apply_deadzone(rc.roller);  
+        z_speed_ref = apply_deadzone(rc.roller)*0.8f;  
 
         x_speed = x_speed_old * 0.7 + x_speed_ref * 0.3;
         y_speed = y_speed_old * 0.7 + y_speed_ref * 0.3;
@@ -83,48 +85,54 @@ void Chassis_Task(void *argument)
         uint8_t cur_s1 = (uint8_t)rc.s1;
         uint8_t cur_s2 = (uint8_t)rc.s2;
 				
+				
 				//只要 rc.s1/rc.s2 和上一轮不一样，就调用一次 chassis_yaw_mode_reset()。
         if (s1_prev != cur_s1 || s2_prev != cur_s2) {
             s1_prev = cur_s1;
             s2_prev = cur_s2;
             chassis_yaw_mode_reset();   /* 发停止帧 + 清 PID + 清锁存 */
         }
-
+						
         if (rc.s1 == 3) {
 					
             if(rc.s2==2){
-					if(auto_nav.dataint16_t.chassis_mode==2){
-							 float xnav_speed=auto_nav.dataint16_t.linear_x;
-						float ynav_speed=auto_nav.dataint16_t.linear_y;
-						float znav_speed=auto_nav.dataint16_t.rotate_z;
-						  Chassis_WheatWheel_Solution(-xnav_speed, ynav_speed, znav_speed);
-					}
-					}
-						else {
-						  yaw_rc_hold(rc.ch2, 1, YAW_HOLD_MODE_VEL);
-							Chassis_WheatWheel_Solution(x_speed * 9, y_speed * 9, z_speed * 4);
-						}
-        } else if (rc.s1 == 2) {
-            if (rc.s2 == 1) {
-                sin_control(x_speed, y_speed, chassis_Yaw);                   
-            } else if (rc.s2 == 2) {
-						 gimbal_world_lock(x_speed,y_speed,chassis_Yaw,3000);
+							if(auto_nav.dataint16_t.chassis_mode==2) {
+							 x_nav_speed=auto_nav.dataint16_t.linear_x/E_P;
+							 y_nav_speed=auto_nav.dataint16_t.linear_y/E_P;
+								
 							}
-						 else if (rc.s2 == 3) {
-                Chassis_WheatWheel_Solution(x_speed * 9, y_speed * 9, z_speed * 4); /* 普通底盘 */
-            } 
+							else {
+								x_nav_speed=0;
+								y_nav_speed=0;
+							}
+							chassis_spin_counter(-x_nav_speed,-y_nav_speed,2000);
+							/*最终使用*/
+//							chassis_nav_auto(-x_nav_speed,-y_nav_speed,2000,2);
+					}
+						else if(rc.s2==1){
+							
+					     yaw_rc_hold(rc.ch2, 1, YAW_HOLD_MODE_VEL);
+							Chassis_WheatWheel_Solution(x_speed * 9, y_speed * 9, z_speed * 4);
+							
+						}
         }
 				else if(rc.s1==1){
-					if(rc.s2==3){
-				     yaw_rc_hold(rc.ch2, 1, YAW_HOLD_MODE_VEL);
-							Chassis_WheatWheel_Solution(x_speed * 9, y_speed * 9, z_speed * 4);
+					if(rc.s2==1){
+					 yaw_rc_hold(rc.ch2, 1, YAW_HOLD_MODE_VEL);
+					Chassis_WheatWheel_Solution(x_speed * 9, y_speed * 9, z_speed * 4);
 					}
-					else if(rc.s2==2){
+          else if(rc.s2==2){
 
-						chassis_spin_counter(x_speed, y_speed, chassis_Yaw, 2000);
-					}
+					chassis_spin_counter(x_speed,y_speed,2000);
+//						chassis_nav_auto(x_speed,y_speed,2000,base_con.get);
+					}					
 				}
 
+			 if(rc.s2==3){
+				 mit_ctrl(&hcan1,&DM_4310,DM_4310.id,0.0f,0.0f,0.0f,0.0f,0.0f);
+				Chassis_WheatWheel_Solution(0,0,0);
+				 
+			 }
         vTaskDelay(1);
     }
 }

@@ -10,6 +10,8 @@
 #include "spi.h"
 #include "chassis_control.h"
 #include "nav_task.h"
+#include "Judging_System_Handler.h"
+#include "usart.h"
 TaskHandle_t chassis_receive_taskHandle;	// main thread
 TaskHandle_t  chassis_yaw_receive_taskHandle;
 TaskHandle_t YAWImuReceive_taskHandle; 
@@ -24,14 +26,6 @@ QueueHandle_t YAWImuReceive_queueHandle;
 QueueHandle_t chassisPOWERReceive_queueHandle;
 YAWImuReceiveData_t YAWImuReceiveData;
 
-/* ===== 上板 IMU (0x200) 数据时效监控 =====
- * 每次成功解析 0x200 时刷新 g_yawimu_rx_tick。
- * 上板掉线后 YAWImuReceiveData.yaw 会冻结在最后一帧, 而依赖它的坐标变换角
- * c_angle = yaw - gimbal_rel 仍会随 gimbal_rel / 底盘转动而假漂
- * (反向双倍自旋挡位下可达 2ω ≈ 616 °/s), 若不判定失效, 车会静默地
- * 越走越偏直至画圈 —— 必须靠时间戳兜底。
- * 注意: 0x300 遥控那边已有 100ms 超时清零(见 ChassisMotorReceiveAdv_Task),
- *       本处为 0x200 补齐对等保护, 阈值见 receive_task.h / YAWIMU_TIMEOUT_MS。 */
 volatile uint32_t g_yawimu_rx_tick = 0;
 
 /**
@@ -55,6 +49,9 @@ uint8_t YAWImu_IsValid(void)
 
 /* 电机调试数据快照 - 接收任务写入，调试任务读取并 printf */
 MotorDebugData_t motor_debug_data[MOTOR_DEBUG_NUM] = {0};
+
+QueueHandle_t AimSignalReceive_queueHandle = NULL;
+int16_t aim_signal_from_adv = 0;
 
 /* ===== 同拍快照实例 =====
  * 由 Chassis_Task 在 Chassis_WheatWheel_Solution() 内填写（见 chassis_control.c），
@@ -111,6 +108,16 @@ void Chassis_Receive_TaskInit(void)
 	while(xRetruned!=pdPASS){};
 		
 		xRetruned = xTaskCreate(
+		AimSignalReceive_Task,
+		"AimSignalReceive_task",
+		125,
+		NULL,
+		osPriorityNormal,
+		NULL
+	);
+	while(xRetruned!=pdPASS){};
+		
+		xRetruned = xTaskCreate(
 		CBorad_IMURead,
 		"CBorad_IMURead_task",
 		300,
@@ -159,8 +166,8 @@ void ChassisMotorReceive_Task(void *argumemt)
 					uint8_t motor_idx = chassisMotor_queueData.id - CAN_CHASSIS_ALL_ID - 1;
 					get_motor_measure(&dji_motorbox[motor_idx], chassisMotor_queueData.rx_data);
 		
-                motor_debug_data[motor_idx].wheel_t = (float)dji_motorbox[motor_idx].given_current * Wheel_T_Coeff;
-                motor_debug_data[motor_idx].wheel_w = (float)dji_motorbox[motor_idx].speed_rpm * Velocity_Constant;
+//                motor_debug_data[motor_idx].wheel_t = (float)dji_motorbox[motor_idx].given_current * Wheel_T_Coeff;
+//                motor_debug_data[motor_idx].wheel_w = (float)dji_motorbox[motor_idx].speed_rpm * Velocity_Constant;
 
 
 				}break;
@@ -260,6 +267,7 @@ void ChassisMotorReceiveAdv_Task(void *argumemt)
 		}
 	}
 }
+float yaw_angle;
 /**
   * @brief          接收上板IMU数据任务
   * @param[in]      none
@@ -289,7 +297,44 @@ void YAWImuReceive_Task(void *argument)
 					YAWImuReceiveData.roll = (float)((int16_t)(YAWReceiveIMU_queueData.rx_data[4]<<8) | (int16_t)YAWReceiveIMU_queueData.rx_data[5])/100.0f;
 					YAWImuReceiveData.z_gry = (float)((int16_t)(YAWReceiveIMU_queueData.rx_data[6]<<8) | (int16_t)YAWReceiveIMU_queueData.rx_data[7])/100.0f;
 					/* 刷新数据时效时间戳(供 YAWImu_IsValid 判定) */
+					
+					yaw_angle= YAWImuReceiveData.yaw+YAW_R;
 					g_yawimu_rx_tick = (uint32_t)xTaskGetTickCount();
+				}break;
+				default:{
+				}
+			}
+		}
+		else{
+		}
+	}
+}
+BaseBoard_Con base_con;
+/**
+  * @brief          接收上板自瞄信号任务 (CAN2 0x230)
+  * @note           帧格式: [0][1] = int16 大端 aim, [2]~[7] 保留
+  * @param[in]      argument: 未使用
+  * @retval         none
+  */
+void AimSignalReceive_Task(void *argument)
+{
+
+	AimSignalReceive_queueHandle = xQueueCreate(40, sizeof(AimSignalReceiveQueueData_t));
+	while(AimSignalReceive_queueHandle == NULL){};
+
+	BaseType_t xStatus;
+	AimSignalReceiveQueueData_t aimSignal_queueData;
+
+	for(;;)
+	{
+		xStatus = xQueueReceive(AimSignalReceive_queueHandle, &aimSignal_queueData, portMAX_DELAY);
+		if(xStatus != pdFALSE)
+		{
+			switch(aimSignal_queueData.id)
+			{
+				case AIM_SIGNAL_CAN_ID:
+				{
+					base_con.get = (int16_t)((aimSignal_queueData.rx_data[0] << 8) | aimSignal_queueData.rx_data[1]);
 				}break;
 				default:{
 				}
@@ -389,7 +434,9 @@ void MotorDebug_PrintTask(void *argument)
 //		       (double)Chassis_Power_Modul.act_chassis_power,
 //		       (unsigned long)g_act_power_rx_tick);
 //printf("%.3f,%.3f\r\n",(double)snap_local.pre_chassis_power,Chassis_Power_Modul.wheel.pre_chassis_power);
+//printf("%f,%f,%f\r\n",rotion_jisuan.DM4310_angle,rotion_jisuan.yaw_unwarp,rotion_jisuan.world2chassis_angle);
 //   printf("%d,%d,%d,%d\r\n",auto_nav.dataint16_t.linear_x,auto_nav.dataint16_t.linear_y,auto_nav.dataint16_t.rotate_z,auto_nav.dataint16_t.chassis_mode);
 	}           
 	
 }
+

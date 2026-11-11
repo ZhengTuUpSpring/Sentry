@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../USER_ALL/application;../USER_ALL/Bsp;../USER_ALL/controller;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../USER_ALL/Task;../USER_ALL/DSP/Include/dsp;../USER_ALL/DSP/Include;../USER_ALL/DSP/Source;../USER_ALL/DSP;../USER_ALL/BMI088_use</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../USER_ALL/application;../USER_ALL/Bsp;../USER_ALL/controller;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../USER_ALL/Task;../USER_ALL/DSP/Include/dsp;../USER_ALL/DSP/Include;../USER_ALL/DSP/Source;../USER_ALL/DSP;../USER_ALL/BMI088_use;..\USER_ALL\Judging_System</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -927,16 +927,6 @@
               <FilePath>..\USER_ALL\controller\pid.h</FilePath>
             </File>
             <File>
-              <FileName>3508_caontrol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER_ALL\controller\3508_caontrol.c</FilePath>
-            </File>
-            <File>
-              <FileName>3508_caontrol.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\USER_ALL\controller\3508_caontrol.h</FilePath>
-            </File>
-            <File>
               <FileName>4310_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER_ALL\controller\4310_control.c</FilePath>
@@ -945,6 +935,16 @@
               <FileName>4310_control.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\USER_ALL\controller\4310_control.h</FilePath>
+            </File>
+            <File>
+              <FileName>control_3508.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_ALL\controller\control_3508.c</FilePath>
+            </File>
+            <File>
+              <FileName>control_3508.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER_ALL\controller\control_3508.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -990,6 +990,16 @@
               <FileName>limit_power_control.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\USER_ALL\application\limit_power_control.h</FilePath>
+            </File>
+            <File>
+              <FileName>chassis_angle_calculation.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_ALL\application\chassis_angle_calculation.c</FilePath>
+            </File>
+            <File>
+              <FileName>chassis_angle_calculation.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER_ALL\application\chassis_angle_calculation.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1690,6 +1700,16 @@
               <FileType>5</FileType>
               <FilePath>..\USER_ALL\Task\nav_task.h</FilePath>
             </File>
+            <File>
+              <FileName>Judging_System_Task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_ALL\Task\Judging_System_Task.c</FilePath>
+            </File>
+            <File>
+              <FileName>Judging_System_Task.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER_ALL\Task\Judging_System_Task.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1744,6 +1764,41 @@
               <FileName>bsp_dwt.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\USER_ALL\BMI088_use\bsp_dwt.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Judging_System</GroupName>
+          <Files>
+            <File>
+              <FileName>Judging_System_Bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_ALL\Judging_System\Judging_System_Bsp.c</FilePath>
+            </File>
+            <File>
+              <FileName>Judging_System_Bsp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER_ALL\Judging_System\Judging_System_Bsp.h</FilePath>
+            </File>
+            <File>
+              <FileName>Judging_System_Handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_ALL\Judging_System\Judging_System_Handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>Judging_System_Handler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER_ALL\Judging_System\Judging_System_Handler.h</FilePath>
+            </File>
+            <File>
+              <FileName>RingBuffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_ALL\Judging_System\RingBuffer.c</FilePath>
+            </File>
+            <File>
+              <FileName>RingBuffer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER_ALL\Judging_System\RingBuffer.h</FilePath>
             </File>
           </Files>
         </Group>

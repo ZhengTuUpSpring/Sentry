@@ -81,44 +81,6 @@ void YAW_4310motor_init(void)
    DM_4310.start_flag = 0;
 }
 
-
-//bool motor1_init(motor_t *motor1)
-//{
-//    static uint32_t last_enable_time = 0;
-//    uint32_t now;
-//		uint16_t mode_id;
-//	
-//    if (!motor1) {
-//        return false;
-//    }
-
-//    switch (motor1->ctrl.mode)
-//    {
-//        case MOTOR_MODE_MIT:
-//            mode_id = MIT_MODE;
-//            break;
-//        case MOTOR_MODE_SPEED:
-//            mode_id = SPEED_MODE;
-//            break;
-//        case MOTOR_MODE_POSVEL:
-//        default:
-//            mode_id = POS_MODE;
-//            break;
-//    }
-
-//    if (motor1->para.state == 0x01) {
-//        motor1->start_flag = 1;
-//        return true;
-//    }
-
-//    now = HAL_GetTick();
-//    if (now - last_enable_time >= 50) {
-//        last_enable_time = now;
-//        enable_motor_mode(&hcan1, motor1->id, mode_id);
-//    }
-
-//    return false;
-//}
 bool motor1_init(motor_t *motor1)
 {
   if(!motor1) return false;
@@ -144,7 +106,7 @@ void speed_ctrl(CAN_HandleTypeDef* hcan,uint16_t motor_id, float vel)
 	
 	canx_send_data(hcan, id, data, 4);
 }
-//�ٶ�λ�ÿ���ģʽ
+
 void pos_speed_ctrl(CAN_HandleTypeDef* hcan,uint16_t motor_id, float pos, float vel)
 {
 	uint16_t id;

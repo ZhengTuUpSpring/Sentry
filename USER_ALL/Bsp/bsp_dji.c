@@ -186,6 +186,17 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
 						 }						 
 					 }
 					break;
+				 /* 上板自瞄信号接收 (0x230) */
+				 case AIM_SIGNAL_CAN_ID:
+					 {
+						 AimSignalReceiveQueueData_t aimSignal_queueData;
+						 aimSignal_queueData.id = CAN2_rx_header.StdId;
+						 memcpy(aimSignal_queueData.rx_data, can2_rx_data, 8*sizeof(uint8_t));
+						 if(AimSignalReceive_queueHandle != NULL){
+								xsendStatus = xQueueSendFromISR(AimSignalReceive_queueHandle, &aimSignal_queueData, &xHigherPriorityTaskWorken);
+						 }
+					 }
+					break;
 					/* 导航数据接收 */
 					case NAV_CAN_REV_ID:
 					  {
